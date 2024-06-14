@@ -1,0 +1,55 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask MySQL App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Flask MySQL App</h1>
+        <form method="POST" action="/query">
+            <label for="query">Enter SQL Query:</label>
+            <textarea id="query" name="query" rows="4" cols="50" required></textarea>
+            <button type="submit">Execute Query</button>
+        </form>
+        <form method="POST" action="/add">
+            <label for="table">Table Name:</label>
+            <input type="text" id="table" name="table" required>
+            <label for="values">Values (comma separated):</label>
+            <input type="text" id="values" name="values" required>
+            <button type="submit">Add Data</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% if result %}
+            <h2>Query Result:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        {% for key in result[0].keys() %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in result %}
+                        <tr>
+                            {% for value in row.values() %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>

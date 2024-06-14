@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: two-tier-app
+  labels:
+    app: two-tier-app
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: two-tier-app
+  template:
+    metadata:
+      labels:
+        app: two-tier-app
+    spec:
+      containers:
+        - name: two-tier-app-ctr
+          image: abhidocker948/flaskapp:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql"       # you need to chnage this with mysql service cluster Ip
+            - name: MYSQL_USER
+              value: "admin"
+            - name: MYSQL_PASSWORD
+              value: "admin"
+            - name: MYSQL_DB
+              value: "my-db"
+          ports:
+            - containerPort: 5000
+          imagePullPolicy: Always

@@ -1,0 +1,41 @@
+version: '3'
+services:
+  flaskapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 'abhidocker948/flaskapp:latest'
+    ports:
+      - '5000:5000'
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: admin
+      MYSQL_DB: my-db
+      MYSQL_PASSWORD: admin
+    volumes:
+      - '.:/app'
+    networks:
+      - twotier-CNI
+    depends_on:
+      - mysql
+  mysql:
+    image: 'mysql:5.7'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: my-db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - './mysqldataseed.sql:/docker-entrypoint-initdb.d/mysqldataseed.sql'
+      - 'mysql-data:/var/lib/mysql'
+    networks:
+      - twotier-CNI
+
+networks:
+  twotier-CNI:
+    driver: bridge
+
+volumes:
+  mysql-data:
